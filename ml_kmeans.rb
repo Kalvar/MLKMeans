@@ -1,5 +1,9 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__)) unless $LOAD_PATH.include?(File.dirname(__FILE__))
 
+require 'ml_kernel'
+require 'ml_distance'
+require 'ml_pattern'
+
 class MLKMeans
 
 	#Singleton
@@ -16,3 +20,4 @@ class MLKMeans
 	end
 
 end
+
