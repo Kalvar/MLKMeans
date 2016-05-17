@@ -4,7 +4,6 @@ class MLKmeansPattern
 
 	def initialize(features)
 		@features   = features
-		@identifier = identifier
 	end
 	
 end

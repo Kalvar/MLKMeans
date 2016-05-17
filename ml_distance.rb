@@ -24,7 +24,7 @@ class MLKmeansDistance
   	# If sum is zero that won't be a problem in Ruby Math lib.
   	Math.sqrt(sum)
   end
-
+  
   def rbf(x1, x2, sigma = 2.0)
   	sum = 0.0
   	x1.each.with_index{ |aValue, i| 
