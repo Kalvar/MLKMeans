@@ -27,7 +27,7 @@ class MLKMeans
 	end
 
 	def add_patterns(samples)
-		samples.each{}
+		@patterns += samples
 	end
 
 	def add_center(features, identifier)
