@@ -1,20 +1,20 @@
 class MLKmeansPattern
 
 	attr_accessor :features
+	attr_accessor :identifier
 
-	def initialize(features)
-		@features   = features
+	def initialize(features, identifier)
+		@features	  = features
+		@identifier = identifier
 	end
 	
 end
 
+# 繼承寫法
 class MLKmeansCenter < MLKmeansPattern
 
-	attr_accessor :identifier
-
 	def initialize(features, identifier)
-		@features   = features
-		@identifier = identifier
+		super(features, identifier)
 	end
-	
+
 end
