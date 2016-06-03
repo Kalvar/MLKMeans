@@ -7,12 +7,18 @@ class MLKmeansGroup
   attr_accessor :identifier
   # 在這群組裡的數據組
   attr_accessor :patterns
-  # 這群組的中心點
+  # 這群組的當前中心點
   attr_accessor :center
+  # 這群組的上一次中心點
+  attr_accessor :last_center
+  # 距離運算方法
+  attr_accessor :distance_function, :kernel_method
 
   def initialize
-    @patterns   = []
-    @identifier = ""
+    @distance_function = MLKmeansDistance.new
+    @kernel_method	   = MLKmeansKernel::ECULIDEAN
+    @patterns          = []
+    @identifier        = ''
   end
 
   def add_pattern(classified_pattern)
@@ -24,8 +30,23 @@ class MLKmeansGroup
   end
 
   def renew_center
-    # TODO: to renew the center after classified groups
-
+    # To deeply copy current center to last center
+    @last_center          = @center.clone
+    @last_center.features = @center.features.dup
+    @center.remove_features
+    # To average multi-dimensional sub-vectors be central vectors
+    patterns_count        = @patterns.count
+    # 先取出 Pattern 裡的 Features 個數
+    first_pattern         = @patterns.first
+    features_count        = first_pattern.features.count
+    for i in 0...features_count
+      dimension_sum = 0.0
+      @patterns.each { |pattern|
+        dimension_sum += pattern.features[i]
+      }
+      dimension_sum /= patterns_count
+      @center.add_one_feature(dimension_sum)
+    end
   end
 
   def remove_all_patterns
@@ -33,7 +54,26 @@ class MLKmeansGroup
   end
 
   def remove_center
-    @center = nil
+    @center      = nil
+    @last_center = nil
+  end
+
+  # To calculate difference distance between last center and current new center.
+  def calculate_center_difference
+    calculate_distance(@last_center.features, @center.features)
+  end
+
+  def calculate_distance(x1, x2, sigma = 2.0)
+    case @kernel_method
+      when MLKmeansKernel::ECULIDEAN
+        @distance_function.eculidean(x1, x2)
+      when MLKmeansKernel::COSINE_SIMILARITY
+        1.0 - @distance_function.cosine_similarity(x1, x2)
+      when MLKmeansKernel::RBF
+        @distance_function.rbf(x1, x2, sigma)
+      else
+        0.0
+    end
   end
 
 end
