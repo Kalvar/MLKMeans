@@ -7,7 +7,7 @@ class MLKmeansGroup
   attr_accessor :identifier
   # 在這群組裡的數據組
   attr_accessor :patterns
-  # 這群組的當前中心點
+  # 這群組的當前中心點 (也為 New Center)
   attr_accessor :center
   # 這群組的上一次中心點
   attr_accessor :last_center
@@ -25,18 +25,17 @@ class MLKmeansGroup
     @patterns << classified_pattern
   end
 
-  def set_center(center)
-    @center = center
-  end
-
   def renew_center
     # To deeply copy current center to last center
     @last_center          = @center.clone
     @last_center.features = @center.features.dup
+    if @patterns.empty?
+      return
+    end
     @center.remove_features
     # To average multi-dimensional sub-vectors be central vectors
     patterns_count        = @patterns.count
-    # 先取出 Pattern 裡的 Features 個數
+    # 取出 Pattern 裡的 Features 個數 (Dimension)
     first_pattern         = @patterns.first
     features_count        = first_pattern.features.count
     for i in 0...features_count
@@ -49,13 +48,13 @@ class MLKmeansGroup
     end
   end
 
-  def remove_all_patterns
-    @patterns.clear
-  end
-
-  def remove_center
+  def reset_centers
     @center      = nil
     @last_center = nil
+  end
+
+  def remove_all_patterns
+    @patterns.clear
   end
 
   # To calculate difference distance between last center and current new center.
@@ -74,6 +73,15 @@ class MLKmeansGroup
       else
         0.0
     end
+  end
+
+  # To calculate all patterns to current center that distance summation. The SSE will use this value to do judgement.
+  def calculate_group_distance
+    sum = 0.0
+    @patterns.each { |pattern|
+      sum += calculate_distance(pattern.features, @center.features)
+    }
+    sum
   end
 
 end

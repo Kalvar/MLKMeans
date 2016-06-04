@@ -1,16 +1,5 @@
-## About
-
-MLKmeans is implemented K-Means clustering algorithm of Machine Learning.
-
-## How To Get Started
-
-#### Require
-``` ruby
 require './ml_kmeans'
-```
 
-#### Sample
-``` ruby
 kmeans = MLKMeans.new
 # Adding pattern one on one
 kmeans.add_pattern([0, 1])
@@ -61,17 +50,3 @@ completion_block = Proc.new do |success, self_kmeans, total_iteration|
 end
 
 kmeans.training(iteration_block, completion_block)
-```
-
-## Todolist
-
-1. Saving mechanism <br/>
-2. Recalling that trained data <br/>
-
-## Version
-
-V1.0.0
-
-## LICENSE
-
-MIT.
